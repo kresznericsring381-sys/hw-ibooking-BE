@@ -1,0 +1,150 @@
+### 房间预约系统 API 测试
+
+@baseUrl = http://127.0.0.1:5000
+@student_id = 2024001
+@password = password123
+@room_id = 2
+@seat_id = 1
+
+### ========== 健康检查 ==========
+
+### 健康检查
+GET {{baseUrl}}/api/health
+
+### ========== 用户认证 ==========
+
+### 学生注册
+POST {{baseUrl}}/api/register
+Content-Type: application/json
+
+{
+  "student_id": "2024001",
+  "name": "张三",
+  "password": "password123"
+}
+
+### 学生登录
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "student_id": "{{student_id}}",
+  "password": "{{password}}"
+}
+
+### ========== 教室接口 ==========
+
+### 获取所有教室列表
+GET {{baseUrl}}/api/rooms
+
+### 获取教室详情
+GET {{baseUrl}}/api/rooms/{{room_id}}
+
+### ========== 座位管理 ==========
+
+### 初始化座位（管理员）
+POST {{baseUrl}}/api/admin/seat/init
+Content-Type: application/json
+
+{
+  "room_id": {{room_id}},
+  "rows": 10,
+  "cols": 10
+}
+
+### 获取教室座位信息
+GET {{baseUrl}}/api/rooms/{{room_id}}/seats?start_time=2026-05-06T20:00:00&end_time=2026-05-06T22:00:00
+
+### ========== 订单操作 ==========
+
+### 创建订单（预约教室）
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+
+{
+  "student_id": "{{student_id}}",
+  "room_id": {{room_id}},
+  "seat_id": {{seat_id}},
+  "start_time": "2026-05-06T20:00:00",
+  "end_time": "2026-05-06T22:00:00"
+}
+
+### 获取我的订单
+GET {{baseUrl}}/api/orders?student_id={{student_id}}
+
+### 订单签到
+POST {{baseUrl}}/api/orders/1/checkin
+Content-Type: application/json
+
+{
+  "student_id": "{{student_id}}"
+}
+
+### 完成订单
+POST {{baseUrl}}/api/orders/1/complete
+Content-Type: application/json
+
+{
+  "student_id": "{{student_id}}"
+}
+
+### ========== 管理员接口 ==========
+
+### 获取所有订单（管理员）
+GET {{baseUrl}}/api/admin/orders
+
+### 获取所有订单（分页）
+GET {{baseUrl}}/api/admin/orders?page=1&page_size=10
+
+### 按状态过滤订单
+GET {{baseUrl}}/api/admin/orders?status=0&page=1&page_size=10
+
+### 强制取消订单（管理员）
+POST {{baseUrl}}/api/admin/orders/1/cancel
+Content-Type: application/json
+
+{}
+
+### 获取统计数据
+GET {{baseUrl}}/api/admin/dashboard
+
+### ========== 测试场景 ==========
+
+### 场景 1: 完整的预约流程
+# 1. 注册学生
+# POST /api/register
+
+# 2. 登录
+# POST /api/login
+
+# 3. 查看教室
+# GET /api/rooms
+
+# 4. 查看座位
+# GET /api/rooms/1/seats
+
+# 5. 创建订单（预约）
+# POST /api/orders
+
+# 6. 查看我的订单
+# GET /api/orders?student_id=2024001
+
+# 7. 签到
+# POST /api/orders/1/checkin
+
+# 8. 完成订单
+# POST /api/orders/1/complete
+
+### 场景 2: 冲突检测测试
+# 尝试创建时间重叠的订单
+# POST /api/orders （使用重叠的时间）
+
+### 场景 3: 管理员监控
+# 1. 查看所有订单
+# GET /api/admin/orders
+
+# 2. 查看统计数据
+# GET /api/admin/dashboard
+
+# 3. 强制取消订单
+# POST /api/admin/orders/1/cancel
