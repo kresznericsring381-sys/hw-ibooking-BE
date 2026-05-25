@@ -35,3 +35,7 @@ class Config:
         'apscheduler.job_defaults.max_instances': 1,
         'apscheduler.timezone': 'Asia/Shanghai'
     }
+
+    # JWT 配置
+    JWT_SECRET_KEY = 'ibooking_2025_secret'
+    JWT_EXPIRE_HOURS = 24
