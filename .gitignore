@@ -47,3 +47,10 @@ config.local.py
 # Cache
 .cache/
 *.cache
+
+# Office temp files
+~$*
+~WRL*.tmp
+
+# Local docs (not tracked)
+docs/
